@@ -29,8 +29,9 @@ async function getRoutineById(id) {
     `,
       [id]
     );
-    // console.log("getRoutineById ===>", rows);
-    return rows;
+    // console.log("getRoutineById1 ===>", rows);
+    // console.log("getRoutineById2 ===>", rows[0]);
+    return rows[0];
   } catch (error) {
     throw error;
   }
@@ -190,11 +191,19 @@ async function getPublicRoutinesByActivity({ id }) {
   }
 }
 
-async function updateRoutine(id, { isPublic, name, goal }) {
-  // console.log("activityToUpdate parameters =====>", activityToUpdate);
-  // const { id, isPublic, name, goal } = routineToUpdate;
-  // delete routineToUpdate.id;
-  // console.log("Delete activityToUpdate=====>", activityToUpdate);
+async function updateRoutine({ id, isPublic, name, goal }) {
+  let routineToUpdate = {};
+  if (isPublic !== undefined) {
+    routineToUpdate.isPublic = isPublic;
+  }
+  if (name) {
+    routineToUpdate.name = name;
+  }
+  if (goal) {
+    routineToUpdate.goal = goal;
+  }
+
+  // console.log("routineToUpdate =====>", routineToUpdate);
 
   const setString = Object.keys(routineToUpdate)
     .map((key, index) => `"${key}"=$${index + 1}`)
@@ -227,24 +236,23 @@ async function updateRoutine(id, { isPublic, name, goal }) {
 
 async function destroyRoutine(id) {
   try {
-    const { rows } = await client.query(
+    await client.query(
       `
-      DELETE FROM routineactivities
-      WHERE "routineId" = $1; 
+      DELETE FROM routines
+      WHERE id = $1;
     `,
       [id]
     );
 
-    await client.query(
+    const { rows } = await client.query(
       `
-      DELETE FROM routines
+      DELETE FROM routineactivities
       WHERE id = $1; 
     `,
       [id]
     );
-
-    console.log("destroyRoutine ===>", rows);
-    return rows;
+    // console.log("destroyRoutine ===>", rows[0]);
+    return rows[0];
   } catch (error) {
     throw error;
   }
@@ -261,4 +269,5 @@ module.exports = {
   getPublicRoutinesByActivity,
   updateRoutine,
   destroyRoutine,
+  updateRoutine,
 };

@@ -27,6 +27,8 @@ const {
 const {
   addActivityToRoutine,
   destroyRoutineActivity,
+  getRoutineActivitiesByRoutine,
+  updateRoutineActivity,
 } = require("./routine_activities");
 
 const client = require("./client");

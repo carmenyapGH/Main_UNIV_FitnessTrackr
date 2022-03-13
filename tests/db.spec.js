@@ -347,11 +347,11 @@ describe("Database", () => {
           name: "BodyWeight Day",
           goal: "Do workouts that can be done from home, no gym or weights required.",
         });
-        console.log("routineToCreateAndUpdate ===>", routineToCreateAndUpdate);
+        // console.log("routineToCreateAndUpdate ===>", routineToCreateAndUpdate);
         const queriedRoutine = await getRoutineById(
           routineToCreateAndUpdate.id
         );
-        console.log("queriedRoutine ===>", queriedRoutine);
+        // console.log("queriedRoutine ===>", queriedRoutine);
         expect(routineToCreateAndUpdate).toEqual(queriedRoutine);
       });
     });
@@ -364,12 +364,13 @@ describe("Database", () => {
           name: "Arms Day",
           goal: "Do all workouts that work those arms!",
         });
-        console.log(
-          "routineToCreateAndUpdate======>",
-          routineToCreateAndUpdate
-        );
+        // console.log(
+        //   "routineToCreateAndUpdate======>",
+        //   routineToCreateAndUpdate
+        // );
 
         queriedRoutine = await getRoutineById(routineToCreateAndUpdate.id);
+        // console.log("queriedRoutine ===>", queriedRoutine);
       });
       it("Returns the updated routine", async () => {
         expect(routineToCreateAndUpdate).toBeTruthy();
@@ -407,12 +408,16 @@ describe("Database", () => {
         `,
           [routineToCreateAndUpdate.id]
         );
+        // console.log("routine ===>", routine);
+
         expect(routine).toBeFalsy();
       });
       it("Deletes all the routine_activities whose routine is the one being deleted.", async () => {
         const queriedRoutineActivities = await getRoutineActivitiesByRoutine(
           routineToCreateAndUpdate
         );
+
+        // console.log("queriedRoutineActivities===>", queriedRoutineActivities);
         expect(queriedRoutineActivities.length).toBe(0);
       });
     });
@@ -455,6 +460,10 @@ describe("Database", () => {
         routineActivityToCreateAndUpdate = await updateRoutineActivity(
           newRoutineActivityData
         );
+        console.log(
+          "routineActivityToCreateAndUpdate======>",
+          routineActivityToCreateAndUpdate
+        );
         expect(routineActivityToCreateAndUpdate.id).toBe(
           newRoutineActivityData.id
         );
@@ -471,11 +480,17 @@ describe("Database", () => {
         const deletedRoutine = await destroyRoutineActivity(
           routineActivityToCreateAndUpdate.id
         );
+        console.log(
+          "routineActivityToCreateAndUpdate.id===>",
+          routineActivityToCreateAndUpdate.id
+        );
+        console.log("deletedRoutine===>", deletedRoutine);
         expect(deletedRoutine.id).toBe(routineActivityToCreateAndUpdate.id);
         const { rows } = await client.query(`
           SELECT * FROM routine_activities
           WHERE id = ${deletedRoutine.id}
         `);
+
         expect(rows.length).toBe(0);
       });
     });
