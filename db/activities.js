@@ -13,7 +13,6 @@ async function createActivity({ name, description }) {
       [name, description]
     );
 
-    // console.log("activity ===>", activity);
     return activity;
   } catch (error) {
     throw error;
@@ -53,17 +52,12 @@ async function getActivityById(id) {
 }
 
 async function updateActivity(activityToUpdate) {
-  // console.log("activityToUpdate parameters =====>", activityToUpdate);
   const { id } = activityToUpdate;
   delete activityToUpdate.id;
-  // console.log("Delete activityToUpdate=====>", activityToUpdate);
-
   const setString = Object.keys(activityToUpdate)
     .map((key, index) => `"${key}"=$${index + 1}`)
     .join(", ");
-  // console.log(" setString======>", setString);
 
-  // return early if this is called without fields
   if (setString.length === 0) {
     return;
   }

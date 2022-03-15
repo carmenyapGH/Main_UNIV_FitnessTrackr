@@ -39,7 +39,7 @@ async function dropTables() {
     // drop all tables, in the correct order
 
     await client.query(`
-      DROP TABLE IF EXISTS routineActivities;
+      DROP TABLE IF EXISTS routine_activities;
       DROP TABLE IF EXISTS routines;
       DROP TABLE IF EXISTS activities;
       DROP TABLE IF EXISTS users;    
@@ -80,7 +80,7 @@ async function createTables() {
        goal  TEXT NOT NULL
     );
 
-    CREATE TABLE routineActivities (
+    CREATE TABLE routine_activities (
       id SERIAL PRIMARY KEY,
       "routineId" INTEGER REFERENCES routines(id),
       "activityId" INTEGER REFERENCES activities(id),
@@ -261,10 +261,10 @@ async function createInitialRoutineActivities() {
         duration: 15,
       },
     ];
-    const routineActivities = await Promise.all(
+    const routine_activities = await Promise.all(
       routineActivitiesToCreate.map(addActivityToRoutine)
     );
-    console.log("routine_activities created: ", routineActivities);
+    console.log("routine_activities created: ", routine_activities);
     console.log("Finished creating routine_activities!");
   } catch (error) {
     throw error;

@@ -17,7 +17,6 @@ async function createUser({ username, password }) {
     );
 
     delete user.password;
-    console.log("user ===>", user);
     return user;
   } catch (error) {
     throw error;
@@ -79,7 +78,6 @@ async function getUserByUsername({ username }) {
       [username]
     );
 
-    // console.log("users by username rows ===>", rows);
     return rows;
   } catch (error) {
     throw error;

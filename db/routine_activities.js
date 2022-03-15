@@ -11,14 +11,13 @@ async function addActivityToRoutine({
       rows: [addActroutine],
     } = await client.query(
       `
-      INSERT INTO routineActivities ("routineId", "activityId",duration,count) 
+      INSERT INTO routine_activities("routineId", "activityId",duration,count) 
       VALUES($1, $2, $3, $4)
       RETURNING *;
     `,
       [routineId, activityId, duration, count]
     );
 
-    // console.log("addActroutine ===>", addActroutine);
     return addActroutine;
   } catch (error) {
     throw error;
@@ -29,7 +28,7 @@ async function destroyRoutineActivity(id) {
   try {
     const { rows } = await client.query(
       `
-      SELECT * FROM routineactivities
+      SELECT * FROM routine_activities
       WHERE id = $1;
     `,
       [id]
@@ -37,12 +36,12 @@ async function destroyRoutineActivity(id) {
 
     await client.query(
       `
-      DELETE FROM routineactivities
+      DELETE FROM routine_activities
       WHERE id = $1; 
     `,
       [id]
     );
-    console.log("destroyRoutineActivity ===>", rows);
+
     return rows[0];
   } catch (error) {
     throw error;
@@ -54,13 +53,12 @@ async function getRoutineActivitiesByRoutine(fields = {}) {
   try {
     const { rows } = await client.query(
       `
-      SELECT * FROM routineactivities
+      SELECT * FROM routine_activities
       WHERE id = $1; 
     `,
       [id]
     );
 
-    // console.log("getRoutineActivitiesByRoutine1 ===>", rows);
     return rows;
   } catch (error) {
     throw error;
@@ -90,7 +88,7 @@ async function updateRoutineActivity({ id, count, duration }) {
       rows: [routine],
     } = await client.query(
       `
-      UPDATE routineactivities
+      UPDATE routine_activities
       SET ${setString}
       WHERE id=${id}
       RETURNING *;

@@ -13,7 +13,6 @@ async function createRoutine({ creatorId, isPublic, name, goal }) {
       [creatorId, isPublic, name, goal]
     );
 
-    // console.log("Create routine ===>", routine);
     return routine;
   } catch (error) {
     throw error;
@@ -29,8 +28,7 @@ async function getRoutineById(id) {
     `,
       [id]
     );
-    // console.log("getRoutineById1 ===>", rows);
-    // console.log("getRoutineById2 ===>", rows[0]);
+
     return rows[0];
   } catch (error) {
     throw error;
@@ -43,7 +41,7 @@ async function getRoutinesWithoutActivities() {
       SELECT * FROM routines;
       
     `);
-    // console.log("routine ===>", rows);
+
     return rows;
   } catch (error) {
     throw error;
@@ -62,13 +60,11 @@ async function getAllRoutines() {
     for (let item of rows) {
       const activities = await client.query(`
         SELECT * FROM 
-        routineactivities where "activityId"= ${item.id} 
+        routine_activities where "activityId"= ${item.id} 
         `);
       item.activities = activities.rows;
-      // console.log("activities===>", item.activities);
     }
-    delete rows[0].password;
-    // console.log("routine ===>", rows);
+
     return rows;
   } catch (error) {
     throw error;
@@ -88,14 +84,13 @@ async function getAllPublicRoutines() {
     for (let item of rows) {
       const activities = await client.query(`
         SELECT * FROM
-        routineactivities where "activityId"= ${item.id}
+        routine_activities where "activityId"= ${item.id}
 
         `);
       item.activities = activities.rows;
-      // console.log("activities===>", item.activities);
     }
     delete rows[0].password;
-    // console.log("getAllPublicRoutine ===>", rows);
+
     return rows;
   } catch (error) {
     throw error;
@@ -118,14 +113,12 @@ async function getAllRoutinesByUser({ username }) {
     for (let item of rows) {
       const activities = await client.query(`
         SELECT * FROM
-        routineactivities where "activityId"= ${item.id}
+        routine_activities where "activityId"= ${item.id}
 
         `);
       item.activities = activities.rows;
-      // console.log("activities===>", item.activities);
     }
 
-    // console.log("getAllRoutinesByUser ===>", rows);
     return rows;
   } catch (error) {
     throw error;
@@ -148,14 +141,12 @@ async function getPublicRoutinesByUser({ username }) {
     for (let item of rows) {
       const activities = await client.query(`
         SELECT * FROM
-        routineactivities where "activityId"= ${item.id}
+        routine_activities where "activityId"= ${item.id}
 
         `);
       item.activities = activities.rows;
-      // console.log("activities===>", item.activities);
     }
 
-    // console.log("getAllRoutinesByUser ===>", rows);
     return rows;
   } catch (error) {
     throw error;
@@ -177,14 +168,12 @@ async function getPublicRoutinesByActivity({ id }) {
     for (let item of rows) {
       const activities = await client.query(`
         SELECT * FROM
-        routineactivities where "activityId"= ${item.id}
+        routine_activities where "activityId"= ${item.id}
 
         `);
       item.activities = activities.rows;
-      // console.log("activities===>", item.activities);
     }
 
-    // console.log("getPublicRoutinesByActivity ===>", rows);
     return rows;
   } catch (error) {
     throw error;
@@ -203,14 +192,10 @@ async function updateRoutine({ id, isPublic, name, goal }) {
     routineToUpdate.goal = goal;
   }
 
-  // console.log("routineToUpdate =====>", routineToUpdate);
-
   const setString = Object.keys(routineToUpdate)
     .map((key, index) => `"${key}"=$${index + 1}`)
     .join(", ");
-  // console.log(" setString======>", setString);
 
-  // return early if this is called without fields
   if (setString.length === 0) {
     return;
   }
@@ -246,12 +231,12 @@ async function destroyRoutine(id) {
 
     const { rows } = await client.query(
       `
-      DELETE FROM routineactivities
+      DELETE FROM routine_activities
       WHERE id = $1; 
     `,
       [id]
     );
-    // console.log("destroyRoutine ===>", rows[0]);
+
     return rows[0];
   } catch (error) {
     throw error;

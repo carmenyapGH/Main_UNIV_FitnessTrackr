@@ -90,7 +90,6 @@ describe("Database", () => {
     describe("getUserById", () => {
       it("Gets a user based on the user Id", async () => {
         const user = await getUserById(userToCreateAndUpdate.id);
-        // console.log("====>", user.id === userToCreateAndUpdate.id);
         expect(user).toBeTruthy();
         expect(user.id).toBe(userToCreateAndUpdate.id);
       });
@@ -103,9 +102,6 @@ describe("Database", () => {
         const { rows: activitiesFromDatabase } = await client.query(`
         SELECT * FROM activities;
       `);
-        // console.log("activities===>", activities);
-        // console.log("activities rows ===>", { rows: activitiesFromDatabase });
-
         expect(activities).toEqual(activitiesFromDatabase);
       });
     });
@@ -123,14 +119,8 @@ describe("Database", () => {
     describe("updateActivity", () => {
       it("Updates name and description of an activity without affecting the ID. Returns the updated Activity.", async () => {
         const [activityToUpdate] = await getAllActivities();
-        // console.log("activityToUpdate1 =====>", [activityToUpdate]);
-
         activityToUpdate.name = "standing barbell curl";
-        // console.log("activityToUpdate2 =====>", [activityToUpdate]);
-
         const activity = await updateActivity(activityToUpdate);
-        // console.log("activity =====>", activity);
-
         expect(activity).toEqual(activityToUpdate);
       });
     });
@@ -140,7 +130,6 @@ describe("Database", () => {
     describe("getActivityById", () => {
       it("gets activities by their id", async () => {
         const activity = await getActivityById(1);
-        // console.log("====>", activity);
         expect(activity).toBeTruthy();
       });
     });
@@ -148,7 +137,6 @@ describe("Database", () => {
       let routine;
       beforeAll(async () => {
         [routine] = await getAllRoutines();
-        // console.log("getAllRoutines routine ====>", routine);
       });
       it("selects and returns an array of all routines, includes their activities", async () => {
         expect(routine).toEqual(
@@ -185,7 +173,6 @@ describe("Database", () => {
       let routine;
       beforeAll(async () => {
         [routine] = await getAllPublicRoutines();
-        // console.log("getAllPublicRoutines===>", routine);
       });
       it("selects and returns an array of all public routines, includes their activities", async () => {
         expect(routine).toEqual(
@@ -223,9 +210,7 @@ describe("Database", () => {
       let routine, user;
       beforeAll(async () => {
         user = await getUserById(1);
-        // console.log("getAllRoutinesByUser1===>", user);
         [routine] = await getAllRoutinesByUser(user);
-        // console.log("getAllRoutinesByUser2===>", routine);
       });
       it("selects and return an array of all routines made by user, includes their activities", async () => {
         expect(routine).toEqual(
@@ -302,9 +287,7 @@ describe("Database", () => {
       let routine, activity;
       beforeAll(async () => {
         activity = await getActivityById(3);
-        // console.log("activity===>", activity);
         [routine] = await getPublicRoutinesByActivity(activity);
-        // console.log("getPublicRoutinesByActivity ===>", routine);
       });
 
       it("selects and return an array of public routines which have a specific activityId in their routine_activities join, includes their activities", async () => {
@@ -347,11 +330,9 @@ describe("Database", () => {
           name: "BodyWeight Day",
           goal: "Do workouts that can be done from home, no gym or weights required.",
         });
-        // console.log("routineToCreateAndUpdate ===>", routineToCreateAndUpdate);
         const queriedRoutine = await getRoutineById(
           routineToCreateAndUpdate.id
         );
-        // console.log("queriedRoutine ===>", queriedRoutine);
         expect(routineToCreateAndUpdate).toEqual(queriedRoutine);
       });
     });
@@ -364,13 +345,7 @@ describe("Database", () => {
           name: "Arms Day",
           goal: "Do all workouts that work those arms!",
         });
-        // console.log(
-        //   "routineToCreateAndUpdate======>",
-        //   routineToCreateAndUpdate
-        // );
-
         queriedRoutine = await getRoutineById(routineToCreateAndUpdate.id);
-        // console.log("queriedRoutine ===>", queriedRoutine);
       });
       it("Returns the updated routine", async () => {
         expect(routineToCreateAndUpdate).toBeTruthy();
@@ -408,7 +383,6 @@ describe("Database", () => {
         `,
           [routineToCreateAndUpdate.id]
         );
-        // console.log("routine ===>", routine);
 
         expect(routine).toBeFalsy();
       });
@@ -417,7 +391,6 @@ describe("Database", () => {
           routineToCreateAndUpdate
         );
 
-        // console.log("queriedRoutineActivities===>", queriedRoutineActivities);
         expect(queriedRoutineActivities.length).toBe(0);
       });
     });
@@ -460,10 +433,7 @@ describe("Database", () => {
         routineActivityToCreateAndUpdate = await updateRoutineActivity(
           newRoutineActivityData
         );
-        console.log(
-          "routineActivityToCreateAndUpdate======>",
-          routineActivityToCreateAndUpdate
-        );
+
         expect(routineActivityToCreateAndUpdate.id).toBe(
           newRoutineActivityData.id
         );
@@ -480,11 +450,7 @@ describe("Database", () => {
         const deletedRoutine = await destroyRoutineActivity(
           routineActivityToCreateAndUpdate.id
         );
-        console.log(
-          "routineActivityToCreateAndUpdate.id===>",
-          routineActivityToCreateAndUpdate.id
-        );
-        console.log("deletedRoutine===>", deletedRoutine);
+
         expect(deletedRoutine.id).toBe(routineActivityToCreateAndUpdate.id);
         const { rows } = await client.query(`
           SELECT * FROM routine_activities
