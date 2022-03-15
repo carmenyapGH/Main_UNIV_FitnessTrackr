@@ -2,7 +2,8 @@ const client = require("./client");
 const bcrypt = require("bcrypt");
 
 async function createUser({ username, password }) {
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const SALT_COUNT = 10;
+  const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
   try {
     const {
       rows: [user],
