@@ -48,8 +48,7 @@ async function destroyRoutineActivity(id) {
   }
 }
 
-async function getRoutineActivitiesByRoutine(fields = {}) {
-  const { id } = fields;
+async function getRoutineActivitiesByRoutine({ id }) {
   try {
     const { rows } = await client.query(
       `
@@ -65,6 +64,21 @@ async function getRoutineActivitiesByRoutine(fields = {}) {
   }
 }
 
+async function getRoutineActivityById(id) {
+  try {
+    const { rows } = await client.query(
+      `
+      SELECT * FROM routine_activities
+      WHERE id = $1; 
+    `,
+      [id]
+    );
+
+    return rows[0];
+  } catch (error) {
+    throw error;
+  }
+}
 async function updateRoutineActivity({ id, count, duration }) {
   let routineActToUpdate = {};
 
@@ -107,4 +121,5 @@ module.exports = {
   destroyRoutineActivity,
   getRoutineActivitiesByRoutine,
   updateRoutineActivity,
+  getRoutineActivityById,
 };

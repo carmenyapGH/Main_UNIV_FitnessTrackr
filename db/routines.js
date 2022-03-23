@@ -74,7 +74,7 @@ async function getAllRoutines() {
 async function getAllPublicRoutines() {
   try {
     const { rows } = await client.query(`
-      SELECT * , users.username AS "creatorName", routines.id
+      SELECT * , users.username AS "creatorName"
       FROM routines 
       INNER JOIN users
       ON users.id = routines."creatorId"
@@ -83,9 +83,11 @@ async function getAllPublicRoutines() {
     `);
     for (let item of rows) {
       const activities = await client.query(`
-        SELECT * FROM
-        routine_activities where "activityId"= ${item.id}
-
+      
+      SELECT * FROM routine_activities
+      INNER JOIN activities
+      ON  routine_activities."activityId" = activities.id  
+      where "activityId"= ${item.id}
         `);
       item.activities = activities.rows;
     }
@@ -112,9 +114,10 @@ async function getAllRoutinesByUser({ username }) {
     );
     for (let item of rows) {
       const activities = await client.query(`
-        SELECT * FROM
-        routine_activities where "activityId"= ${item.id}
-
+      SELECT * FROM routine_activities
+      INNER JOIN activities
+      ON  routine_activities."activityId" = activities.id  
+      where "activityId"= ${item.id}       
         `);
       item.activities = activities.rows;
     }
@@ -140,10 +143,12 @@ async function getPublicRoutinesByUser({ username }) {
     );
     for (let item of rows) {
       const activities = await client.query(`
-        SELECT * FROM
-        routine_activities where "activityId"= ${item.id}
+      SELECT * FROM routine_activities
+      INNER JOIN activities
+      ON  routine_activities."activityId" = activities.id  
+      where "activityId"= ${item.id}    
+      `);
 
-        `);
       item.activities = activities.rows;
     }
 
@@ -167,13 +172,13 @@ async function getPublicRoutinesByActivity({ id }) {
     );
     for (let item of rows) {
       const activities = await client.query(`
-        SELECT * FROM
-        routine_activities where "activityId"= ${item.id}
-
+      SELECT * FROM routine_activities
+      INNER JOIN activities
+      ON  routine_activities."activityId" = activities.id  
+      where "activityId"= ${item.id}  
         `);
       item.activities = activities.rows;
     }
-
     return rows;
   } catch (error) {
     throw error;
@@ -229,7 +234,7 @@ async function destroyRoutine(id) {
       [id]
     );
 
-    const { rows } = await client.query(
+    await client.query(
       `
       DELETE FROM routine_activities
       WHERE id = $1; 
@@ -237,7 +242,7 @@ async function destroyRoutine(id) {
       [id]
     );
 
-    return rows[0];
+    return;
   } catch (error) {
     throw error;
   }

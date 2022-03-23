@@ -13,7 +13,7 @@ const {
   getRoutinesWithoutActivities,
   getAllRoutinesByUser,
   getPublicRoutinesByUser,
-  getPublicRoutinesByActivity,
+
   updateRoutine,
 } = require("./routines");
 
@@ -29,6 +29,7 @@ const {
   destroyRoutineActivity,
   getRoutineActivitiesByRoutine,
   updateRoutineActivity,
+  getPublicRoutinesByActivity,
 } = require("./routine_activities");
 
 const client = require("./client");

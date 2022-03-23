@@ -54,6 +54,7 @@ async function getActivityById(id) {
 async function updateActivity(activityToUpdate) {
   const { id } = activityToUpdate;
   delete activityToUpdate.id;
+
   const setString = Object.keys(activityToUpdate)
     .map((key, index) => `"${key}"=$${index + 1}`)
     .join(", ");
