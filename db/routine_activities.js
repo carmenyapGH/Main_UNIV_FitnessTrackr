@@ -17,7 +17,6 @@ async function addActivityToRoutine({
     `,
       [routineId, activityId, duration, count]
     );
-
     return addActroutine;
   } catch (error) {
     throw error;

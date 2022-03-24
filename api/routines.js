@@ -85,11 +85,8 @@ routinesRouter.delete("/:routineId", async (req, res, next) => {
 routinesRouter.patch("/:routineId", requireUser, async (req, res, next) => {
   const { routineId } = req.params;
   const { isPublic, name, goal } = req.body;
-  // console.log("3 fields============>", isPublic, name, goal);
-  // console.log("req.body==============>", req.body);
-  // console.log("req.params==============>", routineId);
+
   let authToken = req.headers.authorization.split(" ")[1];
-  // console.log("typeof(isPublic)", typeof isPublic);
 
   let routineToUpdate = {};
   if (routineId) {
@@ -105,24 +102,9 @@ routinesRouter.patch("/:routineId", requireUser, async (req, res, next) => {
   if (goal) {
     routineToUpdate.goal = goal;
   }
-  // console.log("routineToUpdate =====>", routineToUpdate);
-
-  // console.log("=======================isPublic", routineToUpdate.isPublic);
-  // console.log(
-  //   "===============type of isPublic",
-  //   typeof routineToUpdate.isPublic
-  // );
-  // xisPublic = !isPublic;
-  // xif (!isPublic) {
-  // x  isPublic = true;
-  // x} else {
-  // x  isPublic = false;
-  // x}
 
   try {
     const updatedPost = await updateRoutine(routineToUpdate);
-
-    console.log("updatedPost==============>", updatedPost);
     res.send(updatedPost);
   } catch ({ name, message }) {
     next({ name, message });
@@ -131,40 +113,43 @@ routinesRouter.patch("/:routineId", requireUser, async (req, res, next) => {
 
 routinesRouter.post(
   "/:routineId/activities",
-  requireUser,
+
   async (req, res, next) => {
     const { activityId, count, duration } = req.body;
     const { routineId } = req.params;
-    console.log(
-      "POST request req.body & parm****************==============>",
-      req.body,
-      req.params
-    );
-    console.log("POST routineId ****************==============>", routineId);
+    console.log(req.body, req.params);
 
     try {
       const chkRoutineAct = await getRoutineActivitiesByRoutine({
         id: routineId,
       });
-      console.log("POST chkRoutineAct ******=============>", chkRoutineAct[0]);
 
-      if (chkRoutineAct[0].routineId !== routineId) {
+      const existingRA =
+        chkRoutineAct &&
+        chkRoutineAct.filter(
+          (routineActivity) => routineActivity.activityId === activityId
+        );
+      if (existingRA && existingRA.length) {
+        next({
+          name: "AlreadyExistError",
+          message: "Already Exist, please try again",
+        });
+      } else {
         let respondedRoutineActivity = await addActivityToRoutine({
           routineId,
           activityId,
           count,
           duration,
         });
-        console.log(
-          "POST respondedRoutineActivity =============>",
-          respondedRoutineActivity,
-          respondedRoutineActivity.routineId,
-          respondedRoutineActivity.activityId
-        );
 
-        res.send(respondedRoutineActivity);
-      } else {
-        next({ error: "Duplicate Error!" });
+        if (respondedRoutineActivity) {
+          res.send(respondedRoutineActivity);
+        } else {
+          next({
+            name: "CreateFailedError",
+            message: "Create failed, please try again",
+          });
+        }
       }
     } catch ({ name, message }) {
       next({ name, message });

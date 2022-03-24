@@ -21,27 +21,22 @@ const { JWT_SECRET } = process.env;
 
 // set `req.user` if possible
 apiRouter.use(async (req, res, next) => {
-  // apiRouter.get("/me", async (req, res, next) => {
   const prefix = "Bearer ";
   const auth = req.header("Authorization");
-  // console.log("auth===>", auth);
+
   if (!auth) {
     // nothing to see here
     next();
   } else if (auth.startsWith(prefix)) {
     // const token = auth.slice(prefix.length);
     const [, token] = auth.split(" ");
-    // console.log("(auth.startsWith(prefix)auth===>", auth.startsWith(prefix));
-    // console.log("[, token]===>", [, token]);
+
     try {
       //decrypting the token back to a user object and grabbing the user id
       const { id } = jwt.verify(token, JWT_SECRET);
-      // console.log("(id===>", id, username);
+
       if (id) {
         req.user = await getUserById(id);
-
-        // console.log("(req.user===>", req.user);
-        // res.send(req.user);
         next();
       }
     } catch ({ name, message }) {
@@ -54,20 +49,6 @@ apiRouter.use(async (req, res, next) => {
     });
   }
 });
-
-// app.use(async (req, res, next) => {
-//   if (!req.headers.authorization) {
-//     return next();
-//   }
-//   const auth = req.headers.authorization.split(" ")[1];
-//   const _user = jwt.decode(auth, process.env.JWT_SECRET);
-//   if (!_user) {
-//     return next();
-//   }
-//   const user = await getUserById(_user.id);
-//   req.user = user;
-//   next();
-// });
 
 apiRouter.use((req, res, next) => {
   if (req.user) {
@@ -93,13 +74,5 @@ apiRouter.use("/routines", routinesRouter);
 
 const routine_activitiesRouter = require("./routine_activities");
 apiRouter.use("/routine_activities", routine_activitiesRouter);
-
-// all routers attached ABOVE here
-// apiRouter.use((error, req, res, next) => {
-//   res.send({
-//     name: error.name,
-//     message: error.message,
-//   });
-// });
 
 module.exports = apiRouter;
